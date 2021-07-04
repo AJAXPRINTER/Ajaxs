@@ -11,20 +11,18 @@ local function Load_File()
 local f = io.open("./Info_Sudo.lua", "r")  
 if not f then   
 if not redis:get(Server_Devid.."Token_Devbot") then
-io.write('\n\27[1;35mSend Token For Bot : ارسل توكن البوت ...\n\27[0;39;49m')
+io.write('\n\27[1;35m⬇┇Send Token For Bot : ارسل توكن البوت ...\n\27[0;39;49m')
 local token = io.read()
 if token ~= '' then
 local url , res = https.request('https://api.telegram.org/bot'..token..'/getMe')
-local User_Info_bot = JSON.decode(url) 
 if res ~= 200 then
-io.write('\n\27[1;31mToken Is Communication Error\n التوكن غلط جرب مره اخره \n\27[0;39;49m')
+io.write('\n\27[1;31m🔄┇Token Is Communication Error\n التوكن غلط جرب مره اخره \n\27[0;39;49m')
 else
-io.write('\n\27[1;31m• Done Save Token : تم حفظ التوكن \n\27[0;39;49m')
+io.write('\n\27[1;31m☑┇Done Save Token : تم حفظ التوكن \n\27[0;39;49m')
 redis:set(Server_Devid.."Token_Devbot",token)
-redis:set(Server_Devid.."Token_Devbotuser",User_Info_bot.result.username)
 end 
 else
-io.write('\n\27[1;31mToken was not saved \n لم يتم حفظ التوكن \n\27[0;39;49m')
+io.write('\n\27[1;31m🔄┇Token was not saved \n لم يتم حفظ التوكن \n\27[0;39;49m')
 end 
 os.execute('lua Ajaxs.lua')
 end
@@ -56,59 +54,49 @@ io.write('\n\27[1;31m🔄┇The UserName was not Saved : لم يتم حفظ مع
 end 
 os.execute('lua Ajaxs.lua')
 end
-
 ------------------------------------------------------------------------------------------------------------
-local Dev_Info_Sudo = io.open("Info_Sudo.lua", 'w')
-Dev_Info_Sudo:write([[
+local DevStorm_Info_Sudo = io.open("Info_Sudo.lua", 'w')
+DevStorm_Info_Sudo:write([[
 do 
-local File_Info = {
+local STORM_INFO = {
 id_dev = ]]..redis:get(Server_Devid.."Id_Devbotsid")..[[,
-UserName_dev = "]]..redis:get(Server_Devid.."User_Devbots1")..[[",
+UserName_Storm = "]]..redis:get(Server_Devid.."User_Devbots1")..[[",
 Token_Bot = "]]..redis:get(Server_Devid.."Token_Devbot")..[["
 }
-return File_Info
+return STORM_INFO
 end
 
 ]])
-Dev_Info_Sudo:close()
+DevStorm_Info_Sudo:close()
 ------------------------------------------------------------------------------------------------------------
-local Run_File_Ajaxs = io.open("Ajaxs", 'w')
-Run_File_Ajaxs:write([[
+local Run_File_Storm = io.open("Ajaxs", 'w')
+Run_File_Storm:write([[
 #!/usr/bin/env bash
-cd $HOME/]]..redis:get(Server_Devid.."Token_Devbotuser")..[[
-
+cd $HOME/Ajaxs
 token="]]..redis:get(Server_Devid.."Token_Devbot")..[["
 while(true) do
 rm -fr ../.telegram-cli
 ./tg -s ./Ajaxs.lua -p PROFILE --bot=$token
 done
 ]])
-Run_File_Ajaxs:close()
+Run_File_Storm:close()
 ------------------------------------------------------------------------------------------------------------
-local Run_SM = io.open("NG", 'w')
+local Run_SM = io.open("Run", 'w')
 Run_SM:write([[
 #!/usr/bin/env bash
-cd $HOME/]]..redis:get(Server_Devid.."Token_Devbotuser")..[[
-
+cd $HOME/Ajaxs
 while(true) do
 rm -fr ../.telegram-cli
-screen -S ]]..redis:get(Server_Devid.."Token_Devbotuser")..[[ -X kill
-
-screen -S ]]..redis:get(Server_Devid.."Token_Devbotuser")..[[ ./Ajaxs
-
+screen -S DevStorm -X kill
+screen -S DevStorm ./Ajaxs
 done
 ]])
 Run_SM:close()
-local CmdRun =[[
-chmod +x tg
-chmod +x Ajaxs
-chmod +x ./NG
-cp -a ../Ajaxs ../]]..redis:get(Server_Devid.."Token_Devbotuser")..[[ &&
-rm -fr ~/Ajaxs
-../]]..redis:get(Server_Devid.."Token_Devbotuser")..[[/NG
-]]
-os.execute(CmdRun)
-
+io.popen("mkdir Files")
+os.execute('chmod +x tg')
+os.execute('chmod +x Run')
+os.execute('chmod +x Storm')
+os.execute('./Run')
 Status = true
 else   
 f:close()  
@@ -118,6 +106,15 @@ end
 return Status
 end
 Load_File()
+print("\27[36m"..[[                                           
+           888                                  
+           888                                  
+.d8888b 888888888  .d88b.   888 .d88 .d8888b.d88b.  
+88K        888    d88""88b  888p"    888 "888 "88b 
+ Y8888b.   888    888  888  888      888  888  888 
+     X88   Y88b.  Y88..88P  888      888  888  888 
+ 88888P'    "Y888  "Y88P"   888      888  888  888 
+]]..'\27[m')
 ------------------------------------------------------------------------------------------------------------
 sudos = dofile("./Info_Sudo.lua")
 token = sudos.Token_Bot
